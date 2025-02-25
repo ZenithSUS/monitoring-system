@@ -6,7 +6,6 @@ class Auth extends Token {
         parent::__construct();
     }
 
-
     /**
      * Email exists
      * @param string $email
