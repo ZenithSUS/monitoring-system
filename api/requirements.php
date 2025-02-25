@@ -8,68 +8,83 @@ $process = isset($_POST['process']) ? $_POST['process'] : null;
 $postOptions = array("get-requirements", "get-requirement", "add-requirement", "edit-requirement", "delete-requirement");
 
 $token = $headers['Authorization'] ?? null;
-if($token && strpos($token, 'Bearer ') !== false) {
+if ($token && strpos($token, 'Bearer ') !== false) {
     $token = explode(' ', $token)[1];
 }
 
 class RequirementsRequest extends Requirements
 {
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
-    public function getAll() : string {
+    public function getAll(): string
+    {
         return $this->getRequirements();
     }
 
-    public function get(?string $id = null) : string {
+    public function get(?string $id = null): string
+    {
         return $this->getRequirement($id);
     }
 
-    public function add(?string $loc = null, ?string $departmentId = null, ?string $entityName = null, 
-    ?string $frequencyOfCompliance = null, ?string $dateSubmitted = null, 
-    ?string $expiration = null, ?string $renewal = null, 
-    ?string $personInCharge = null, ?string $status = null) : string {
+    public function add(
+        ?string $loc = null,
+        ?string $departmentId = null,
+        ?string $entityName = null,
+        ?string $frequencyOfCompliance = null,
+        ?string $dateSubmitted = null,
+        ?string $expiration = null,
+        ?string $renewal = null,
+        ?string $personInCharge = null,
+        ?string $status = null
+    ): string {
         return $this->addRequirement($loc, $departmentId, $entityName, $frequencyOfCompliance, $dateSubmitted, $expiration, $renewal, $personInCharge, $status);
     }
 
-    public function edit(?string $id = null, ?string $loc = null, ?string $departmentId = null,
-    ?string $entityName, ?string $frequencyOfCompliance,
-    ?string $dateSubmitted, ?string $expiration, ?string $renewal, ?string $personInCharge,
-    ?string $status = null) : string {
-        return $this->editRequirement($id, $loc, $departmentId, $entityName, $frequencyOfCompliance, $dateSubmitted, $expiration, $renewal, $personInCharge, $status);
+    public function edit(
+        ?string $id = null,
+        ?string $loc = null,
+        ?string $departmentId = null,
+        ?string $entityName = null,
+        ?string $personInCharge,
+        ?string $status = null
+    ): string {
+        return $this->editRequirement($id, $loc, $departmentId, $entityName, $personInCharge, $status);
     }
 
-    public function delete(?string $id = null) : string {
+    public function delete(?string $id = null): string
+    {
         return $this->deleteRequirement($id);
     }
-    
-    public function verifyUserToken(?string $token = null) : bool {
+
+    public function verifyUserToken(?string $token = null): bool
+    {
         return $this->verifyToken($token);
     }
-    
-    public function unauthorizedData() : string {
+
+    public function unauthorizedData(): string
+    {
         return $this->unauthorized();
     }
 
-    public function bad() : string {
+    public function bad(): string
+    {
         return $this->badRequest();
     }
 }
 
 $requirements = new RequirementsRequest();
 
-if($requestMethod == 'OPTIONS') {
+if ($requestMethod == 'OPTIONS') {
     http_response_code(200);
     header("Access-Control-Allow-Origin: *");
     header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Authorization, X-Requested-With");
-}
-
-
-else if($requestMethod == 'POST') {
-    if(in_array($process, $postOptions)) {
-        if($requirements->verifyUserToken($token)) {
+} else if ($requestMethod == 'POST') {
+    if (in_array($process, $postOptions)) {
+        if ($requirements->verifyUserToken($token)) {
             $id = isset($_POST['id']) ? $_POST['id'] : null;
             $loc = isset($_POST['LOC']) ? $_POST['LOC'] : null;
             $departmentId = isset($_POST['departmentId']) ? $_POST['departmentId'] : null;
@@ -81,7 +96,7 @@ else if($requestMethod == 'POST') {
             $personInCharge = isset($_POST['personInCharge']) ? $_POST['personInCharge'] : null;
             $status = isset($_POST['status']) ? $_POST['status'] : null;
 
-            switch($process) {
+            switch ($process) {
                 case 'get-requirements':
                     echo $requirements->getAll();
                     break;
@@ -101,17 +116,12 @@ else if($requestMethod == 'POST') {
                     echo $requirements->bad();
                     break;
             }
-        }
-        else {
+        } else {
             echo $requirements->unauthorizedData();
         }
-    }
-    else {
+    } else {
         echo $requirements->bad();
     }
-}
-else {
+} else {
     echo $requirements->bad();
 }
-
-?>

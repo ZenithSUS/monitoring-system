@@ -1,7 +1,7 @@
 <?php
-include_once 'user.php';
+include_once 'requirements.php';
 
-class UserProgress extends Users
+class SubscriptionProgress extends Requirements
 {
     protected function __construct()
     {
@@ -10,7 +10,7 @@ class UserProgress extends Users
 
     public function getUserProgress(?string $userId): array
     {
-        $sql = "SELECT progress FROM user_progress WHERE user_id = ?";
+        $sql = "SELECT DATEDIFF(expiration, CURDATE()) AS days_left FROM requirements WHERE user_id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('s', $userId);
         $stmt->execute();
@@ -18,9 +18,9 @@ class UserProgress extends Users
         return $result->num_rows > 0 ? $result->fetch_assoc() : [];
     }
 
-    public function resetUserProgress(?string $userId): bool
+    public function resetUserProgress(?string $id): bool
     {
-        $sql = "UPDATE user_progress SET progress = 0 WHERE user_id = ?";
+        $sql = "UPDATE requirements SET status = 'incomplete', date_submitted = CURDATE() WHERE user_id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('s', $userId);
         return $stmt->execute();
@@ -44,11 +44,7 @@ class UserProgress extends Users
         $expiryDate = date('Y-m-d', strtotime("+{$subscriptionDurationDays} days"));
 
         // Update subscription data in database
-        $sql = "UPDATE user_subscriptions SET 
-            start_date = ?, 
-            expiry_date = ?, 
-            status = 'active' 
-            WHERE user_id = ?";
+        $sql = "UPDATE requirements SET date_submitted = ?, expiration = ? WHERE user_id = ?";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('sss', $startDate, $expiryDate, $userId);
