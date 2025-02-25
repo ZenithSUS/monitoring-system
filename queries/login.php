@@ -4,7 +4,8 @@ include_once 'auth.php';
 class Login extends Auth
 {
 
-    protected function __construct() {
+    protected function __construct()
+    {
         parent::__construct();
     }
 
@@ -14,22 +15,23 @@ class Login extends Auth
      * @param string $password
      * @return string
      */
-    protected function loginUser(?string $email = null, ?string $password = null) : string { 
+    protected function loginUser(?string $email = null, ?string $password = null): string
+    {
         $sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('s', $email);
 
-        if(!$stmt->execute()) {
+        if (!$stmt->execute()) {
             return $this->queryFailed();
         }
 
 
         $result = $stmt->get_result();
-        
-        if($result->num_rows > 0) {
+
+        if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
 
-            if(!password_verify($password, $row['password'])) {
+            if (!password_verify($password, $row['password'])) {
                 $this->errors['auth_error'] = 'Email or password is incorrect';
                 return $this->fieldError($this->errors);
             }
@@ -39,8 +41,8 @@ class Login extends Auth
             return $this->success('login', $token);
         }
 
-        
-        if(!$this->checkLoginAuth($email, $password)){
+
+        if (!$this->checkLoginAuth($email, $password)) {
             $this->errors['auth_error'] = 'Email or password is incorrect';
             return $this->fieldError($this->errors);
         }
@@ -52,8 +54,9 @@ class Login extends Auth
      * Check login auth
      * @param string $account
      * @return bool
-    */
-    protected function checkLoginAuth(string $email) : bool {
+     */
+    protected function checkLoginAuth(string $email): bool
+    {
         $sql = "SELECT email FROM users WHERE email = ? LIMIT 1";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('s', $email);
@@ -67,9 +70,9 @@ class Login extends Auth
      * @param string $token
      * @return string
      */
-    protected function logoutUser(?string $token) : string {
+    protected function logoutUser(?string $token): string
+    {
         $this->deleteToken($token);
         return $this->success('logout');
     }
 }
-?>

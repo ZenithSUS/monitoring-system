@@ -1,7 +1,8 @@
 <?php
 include_once 'db.php';
 
-class API extends Database {
+class API extends Database
+{
     protected $conn;
     protected $errors = array();
     protected $fileConfig = [
@@ -12,7 +13,8 @@ class API extends Database {
         ]
     ];
 
-    protected function __construct() {
+    protected function __construct()
+    {
         $this->conn = $this->connect();
     }
 
@@ -22,15 +24,16 @@ class API extends Database {
      * @param string $token
      * @return string
      */
-    protected function success(string $type = null, string $token = null) : string {
+    protected function success(string $type = null, string $token = null): string
+    {
 
-        $response = array (
+        $response = array(
             'status' => 200,
             'message' => 'success'
         );
 
-        if(isset($token)) $response['token'] = $token;
-        if(isset($type)) $response['message'] = $type. ' successful';
+        if (isset($token)) $response['token'] = $token;
+        if (isset($type)) $response['message'] = $type . ' successful';
 
         header("HTTP/1.1 200 OK");
         return json_encode($response);
@@ -40,8 +43,9 @@ class API extends Database {
      * Created response
      * @return string
      */
-    protected function created() : string {
-        $response = array (
+    protected function created(): string
+    {
+        $response = array(
             'status' => 201,
             'message' => 'created'
         );
@@ -52,9 +56,10 @@ class API extends Database {
     /**
      * Edited response
      * @return string
-    */
-    protected function edited() : string {
-        $response = array (
+     */
+    protected function edited(): string
+    {
+        $response = array(
             'status' => 200,
             'message' => 'edited'
         );
@@ -66,8 +71,9 @@ class API extends Database {
      * Deleted response
      * @return string
      */
-    protected function deleted() : string {
-        $response = array (
+    protected function deleted(): string
+    {
+        $response = array(
             'status' => 200,
             'message' => 'deleted'
         );
@@ -79,17 +85,18 @@ class API extends Database {
      * Fetched response
      * @param string $type
      * @return string
-    */
-    protected function fetched($result, ?string $type = null, ?int $totalPages = null) : string {
+     */
+    protected function fetched($result, ?string $type = null, ?int $totalPages = null): string
+    {
         !$type ? $result = $result->fetch_all(MYSQLI_ASSOC) : $result = $result->fetch_assoc();
-        
-        $response = array (
+
+        $response = array(
             'status' => 200,
             'message' => 'Query successful',
             'data' => $result
         );
-        if(isset($totalPages)) $response['totalPages'] = $totalPages;
-        
+        if (isset($totalPages)) $response['totalPages'] = $totalPages;
+
         header("HTTP/1.1 200 OK");
         return json_encode($response);
     }
@@ -97,35 +104,38 @@ class API extends Database {
     /**
      * Query failed response
      * @return string
-    */
-    protected function queryFailed() : string {
-        $response = array (
+     */
+    protected function queryFailed(): string
+    {
+        $response = array(
             'status' => 500,
             'message' => 'Query failed'
         );
         header("HTTP/1.1 500 Internal Server Error");
         return json_encode($response);
     }
-    
+
     /**
      * Bad request response
      * @return string
-    */
-    protected function badRequest() : string {
-        $response = array (
+     */
+    protected function badRequest(): string
+    {
+        $response = array(
             'status' => 400,
             'message' => 'Bad Request'
         );
         header("HTTP/1.1 400 Bad Request");
         return json_encode($response);
     }
-    
+
     /**
      * Unauthorized response
      * @return string
-    */
-    protected function unauthorized() : string {
-        $response = array (
+     */
+    protected function unauthorized(): string
+    {
+        $response = array(
             'status' => 401,
             'message' => 'Unauthorized'
         );
@@ -136,9 +146,10 @@ class API extends Database {
     /**
      * Not found response
      * @return string
-    */
-    protected function notFound() : string {
-        $response = array (
+     */
+    protected function notFound(): string
+    {
+        $response = array(
             'status' => 404,
             'message' => 'Not Found'
         );
@@ -150,8 +161,9 @@ class API extends Database {
      * Field error response
      * @param array $errors
      * @return string
-    */
-    protected function fieldError(array $errors) : string {
+     */
+    protected function fieldError(array $errors): string
+    {
         $response = array(
             "status" => 422,
             "message" => "Unprocessable Content",
@@ -161,4 +173,3 @@ class API extends Database {
         return json_encode($response);
     }
 }
-?>
