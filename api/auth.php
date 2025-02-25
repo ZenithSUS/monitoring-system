@@ -6,6 +6,12 @@ $requestMethod = $_SERVER["REQUEST_METHOD"] ?? null;
 $process = isset($_POST['process']) ? $_POST['process'] : null;
 $routeOptions = array("login", "register", "logout");
 
+$token = $headers['Authorization'] ?? null;
+if(isset($token) && strpos($token, 'Bearer ') !== false) {
+    $token = explode(' ', $token)[1];
+}
+
+
 class AuthRequest extends Auth {
 
     public function __construct(){

@@ -22,11 +22,21 @@ class Users extends Token {
     }
 
     protected function getUsers() : string {
-        $sql = "SELECT * FROM users";
+        $sql = "SELECT id, first_name, middle_name, last_name, email, department FROM users";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
         return $result->num_rows > 0 ? $this->fetched($result) : $this->notFound();
+    }
+
+    protected function getUser(?string $id = null) : string {
+        $id = intval($id);
+        $sql = "SELECT id, first_name, middle_name, last_name, email, department FROM users WHERE id = ? LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('s', $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->num_rows > 0 ? $this->fetched($result, 'user') : $this->notFound();
     }
 }
 ?>

@@ -20,10 +20,4 @@ if(function_exists('getallheaders')) {
         $headers['Authorization'] = null;
     }
 }
-
-$token = $headers['Authorization'] ?? null;
-
-if($token && strpos('Bearer', $token) !== false) {
-    $token = explode(' ', $token)[1];
-}
 ?>

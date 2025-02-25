@@ -137,7 +137,7 @@ class Auth extends Token {
     */
     private function registerUserQuery(string $firstname, string $middlename, string $lastname, string $email, string $password) : string {
         $password = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO users (id, username, password) VALUES (UUID(), ?, ?)";
+        $sql = "INSERT INTO users (id, fi username, password) VALUES (UUID(), ?, ?)";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param('ss', $email, $password);
         return $stmt->execute() ? $this->success('register') : $this->queryFailed();

@@ -5,7 +5,13 @@ include_once '../queries/users.php';
 
 $requestMethod = $_SERVER["REQUEST_METHOD"] ?? null;
 $process = isset($_POST['process']) ? $_POST['process'] : null;
-$routeOptions = array("get-username");
+$routeOptions = array("get-username", "get-users", "get-user");
+
+$token = $headers['Authorization'] ?? null;
+if(isset($token) && strpos($token, 'Bearer ') !== false) {
+    $token = explode(' ', $token)[1];
+}
+
 
 class UsersRequest extends Users {
     
@@ -17,11 +23,15 @@ class UsersRequest extends Users {
         return json_encode(["username" => $this->getFullName($token)]);
     }
 
-    public function get() : string {
+    public function getAll() : string {
         return $this->getUsers();
     }
 
-    public function verifyUserToken(?string $token) : bool {
+    public function get(?string $id = null) : string {
+        return $this->getUser($id);
+    }
+
+    public function verifyUserToken(?string $token = null) : bool {
         return $this->verifyToken($token);
     }
 
@@ -57,13 +67,21 @@ if($requestMethod == 'POST') {
     }
 
     if($process && $process == 'get-users') {
-        echo $users->get();
+        echo $users->getAll();
     }
 
+    if(!in_array($process, $routeOptions)) {
+        echo $users->bad();
+    }
 }
 
-if(!in_array($process, $routeOptions)) {
-    echo $users->bad();
+if($requestMethod == 'GET') {
+    if(isset($_GET['id'])) {
+        $id = $_GET['id'] ?? null;
+        echo $users->get($id);
+    } else {
+        echo $users->bad();
+    }
 }
 
 ?>
