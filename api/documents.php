@@ -1,6 +1,6 @@
 <?php
 include_once '../headers.php';
-include_once '../queries/authorization_headers.php';
+include_once '../authorization_headers.php';
 include_once '../queries/documents.php';
 
 $requestMethod = $_SERVER["REQUEST_METHOD"] ?? null;
@@ -26,12 +26,12 @@ class DocumentsRequest extends Documents
         return $this->getDocument($id);
     }
 
-    public function add(?string $name = null, ?string $file_path = null) : string {
-        return $this->addDocument($name, $file_path);
+    public function add(?string $name = null, $file = null) : string {
+        return $this->addDocument($name, $file);
     }
 
-    public function edit(?string $id = null, ?string $name = null, ?string $file_path = null) : string {
-        return $this->editDocument($id, $name, $file_path);
+    public function edit(?string $id = null, ?string $name = null, $file = null) : string {
+        return $this->editDocument($id, $name, $file);
     }
 
     public function delete(?string $id = null) : string {
@@ -64,6 +64,38 @@ if($requestMethod == 'OPTIONS') {
 if(!$documents->verifyUserToken($token)) {
     echo $documents->unauthorizedData();
     exit();
+}
+
+if($requestMethod == 'POST') {
+    if(!in_array($process, $postOptions)) {
+        echo $documents->bad();
+        exit();
+    }
+
+    if($process == 'get-documents') {
+        echo $documents->getAll();
+    } else if($process == 'add-document') {
+        $name = isset($_POST['name']) ? $_POST['name'] : null;
+        $file = isset($_FILES['file']) ? $_FILES['file'] : null;
+        echo $documents->add($name, $file_path);
+    } else if($process == 'edit-document') {
+        $id = isset($_POST['id']) ? $_POST['id'] : null;
+        $name = isset($_POST['name']) ? $_POST['name'] : null;
+        $file = isset($_FILES['file']) ? $_FILES['file'] : null;
+        echo $documents->edit($id, $name, $file_path);
+    } else if($process == 'delete-document') {
+        $id = isset($_POST['id']) ? $_POST['id'] : null;
+        echo $documents->delete($id);
+    }
+} else if($requestMethod == 'GET') {
+    if(isset($_GET['id'])) {
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
+        echo $documents->get($id);
+    } else {
+        echo $documents->bad();
+    }
+} else {
+    echo $documents->bad();
 }
 
 

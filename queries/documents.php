@@ -10,7 +10,7 @@ class Documents extends Token {
 
     protected function getDocuments(): string
     {
-        $sql = "SELECT id, name, file_path FROM users";
+        $sql = "SELECT id, name, file_path, reference_number FROM documents";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -19,7 +19,7 @@ class Documents extends Token {
 
     protected function getDocument(?string $id): string
     {
-        $sql = "SELECT id, name, file_path, FROM users WHERE reference_number = ?";
+        $sql = "SELECT id, name, file_path, reference_number FROM documents WHERE reference_number = ?";
         $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
@@ -101,7 +101,7 @@ class Documents extends Token {
         $fileNameNew = uniqid('', true) . "." . $fileActualExt;
         $targetDirectory = $this->fileConfig['document'] . $fileNameNew; 
         
-        $allowed = array("jpeg", "png", "jpg");
+        $allowed = $this->fileConfig['document']['allowedTypes'];
     
         if ($fileError !== UPLOAD_ERR_OK) {
             $this->errors['fileCreate'] = 'Error Uploading Image!';
@@ -112,7 +112,7 @@ class Documents extends Token {
         } 
     
         if ($fileSize > 5000000) {
-            $this->errors['fileCreate'] = 'Image size too big!';
+            $this->errors['fileCreate'] = 'File size too big!';
         }
 
         if(!empty($this->errors)){

@@ -30,7 +30,7 @@ class API extends Database {
         );
 
         if(isset($token)) $response['token'] = $token;
-        if(isset($type)) $response['type'] = $type. ' successful';
+        if(isset($type)) $response['message'] = $type. ' successful';
 
         header("HTTP/1.1 200 OK");
         return json_encode($response);
