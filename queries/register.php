@@ -19,8 +19,8 @@ class Register extends Auth
      * @return void
      * @throws Exception
      */
-    protected function registerUser(?string $firstname = null, ?string $middlename = null, ?string $lastname = null, ?string $email = null, ?string $password = null, ?string $confirmpassword = null) : void {
-        $this->checkFields($firstname, $middlename, $lastname, $email, $password, $confirmpassword);
+    protected function registerUser(?string $firstname = null, ?string $middlename = null, ?string $lastname = null, ?string $email = null, ?string $department, ?string $password = null, ?string $confirmpassword = null) : void {
+        $this->checkFields($firstname, $middlename, $lastname, $email, $department, $password, $confirmpassword);
 
         try {
             if(!empty($this->errors)) {
@@ -29,9 +29,10 @@ class Register extends Auth
                         array(
                             "status" => 400,
                             "message" => "There is something wrong with the data"
-                        )));
+                        ))
+                    );
             }
-            $this->registerUserQuery($firstname, $middlename, $lastname, $email, $password);
+            $this->registerUserQuery($firstname, $middlename, $lastname, $email, $department, $password);
         } catch (Exception $e) {
             echo $e->getMessage();
         }
@@ -46,18 +47,19 @@ class Register extends Auth
      * @param string $password
      * @return string 
     */
-    private function registerUserQuery(?string $firstname = null, ?string $middlename = null, ?string $lastname = null, ?string $email = null, ?string $password = null) : void {
+    private function registerUserQuery(?string $firstname = null, ?string $middlename = null, ?string $lastname = null, ?string $email = null, ?string $department = null, ?string $password = null) : void {
+        $id =
         $firstname = $this->conn->real_escape_string($firstname);
         $middlename = $this->conn->real_escape_string($middlename);
         $lastname = $this->conn->real_escape_string($lastname);
         $email = $this->conn->real_escape_string($email);
+        $department = $this->conn->real_escape_string($department);
         $password = $this->conn->real_escape_string($password);
-
         try {
             $password = password_hash($password, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO users (id, first_name, middle_name, last_name, email, password) VALUES (UUID(), ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO users (id, first_name, middle_name, last_name, email, department, password) VALUES (UUID(), ?, ?, ?, ?, ?, ?)";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param('sssss', $firstname, $middlename, $lastname, $email, $password);
+            $stmt->bind_param('ssssss', $firstname, $middlename, $lastname, $email, $department, $password);
             if (!$stmt->execute()) {
                 throw new Exception($this->queryFailed());
             }
@@ -77,7 +79,7 @@ class Register extends Auth
      * @param string $confirmpassword
      * @return void
     */
-    protected function checkFields(?string $firstname = null, ?string $middlename = null, ?string $lastname = null, ?string $email = null, ?string $password = null, ?string $confirmpassword = null) : void {
+    protected function checkFields(?string $firstname = null, ?string $middlename = null, ?string $lastname = null, ?string $email = null, ?string $department = null, ?string $password = null, ?string $confirmpassword = null) : void {
         if(empty($firstname) || is_null($firstname)) {
             $this->errors['firstname'] = "Please fill the first name";
         } elseif(strlen($firstname) < 2) {
@@ -108,6 +110,10 @@ class Register extends Auth
             $this->errors['email'] = "Please enter a valid email";
         } else if($this->emailExists($email)) {
             $this->errors['email'] = "Email already exists";
+        }
+
+        if(empty($department) || is_null($department)) {
+            $this->errors['department'] = "Please fill the department";
         }
 
 

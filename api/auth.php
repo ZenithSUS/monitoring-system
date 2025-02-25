@@ -50,8 +50,8 @@ class RegisterRequest extends Register {
         parent::__construct();
     }
 
-    public function register(?string $firstname, ?string $middlename = null, ?string $lastname = null, ?string $email = null, ?string $password = null, ?string $confirmpassword = null) : void {
-        $this->registerUser($firstname, $middlename, $lastname, $email, $password, $confirmpassword);
+    public function register(?string $firstname, ?string $middlename = null, ?string $lastname = null, ?string $email = null, ?string $department = null, ?string $password = null, ?string $confirmpassword = null) : void {
+        $this->registerUser($firstname, $middlename, $lastname, $email, $department, $password, $confirmpassword);
     }
 }
 
@@ -73,9 +73,10 @@ if($requestMethod == "POST") {
         $middlename = $_POST['middle_name'] ?? null;
         $lastname = $_POST['last_name'] ?? null;
         $email = $_POST['email'] ?? null;
+        $department = $_POST['department'] ?? null;
         $password = $_POST['password'] ?? null;
         $confirmpassword = $_POST['confirmpassword'] ?? null;
-        echo $register->register($firstname, $middlename, $lastname, $email, $password, $confirmpassword);
+        echo $register->register($firstname, $middlename, $lastname, $email, $department, $password, $confirmpassword);
     }
 
     if($process && $process == "logout") {

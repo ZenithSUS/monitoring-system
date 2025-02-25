@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 24, 2025 at 10:00 AM
+-- Generation Time: Feb 25, 2025 at 07:35 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -74,22 +74,23 @@ CREATE TABLE `requirements` (
 --
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` varchar(24) NOT NULL,
   `first_name` varchar(50) NOT NULL,
   `middle_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `department` varchar(50) NOT NULL,
-  `token` varchar(36) DEFAULT NULL
+  `token` varchar(36) DEFAULT NULL,
+  `role` varchar(255) DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `first_name`, `middle_name`, `last_name`, `email`, `password`, `department`, `token`) VALUES
-(1, 'Jeran Christopher', 'Dinglasan', 'Merino', 'test@gmail.com', '$2y$10$v8TfiYzECWKIHPjar2duyeOI974PNWPP8nD/eoGuIs207.rH7CDkS', 'IT DEPARTMENT', 'b6293db09739e9a9973df856b980e80d');
+INSERT INTO `users` (`id`, `first_name`, `middle_name`, `last_name`, `email`, `password`, `department`, `token`, `role`) VALUES
+('b1200c06-f340-11ef-8c99-', 'first', 'middle', 'last', 'user@gmail.com', '$2y$10$iMGrzZrHVNWnsVnLoFCTG.pPJrBU/wcmA73ZZdzWXrJZTJVAI576K', 'IT Department', NULL, 'user');
 
 --
 -- Indexes for dumped tables
@@ -130,12 +131,6 @@ ALTER TABLE `users`
 --
 ALTER TABLE `documents`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
