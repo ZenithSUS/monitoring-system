@@ -12,15 +12,18 @@ class SubscriptionStatus extends Users
     }
 
 
-    protected function getSubscriptionStatus(?string $id): string
-    {
-        $sql = "SELECT id, name, file_path,  FROM subscription_status WHERE reference_number = ?";
+    protected function getSubscriptionStatus(?string $id): string {
+        
+        $sql = "SELECT frequency_of_compliance, date_submiited, expiration,
+        renewa, type_of_compliance, 
+        status FROM requirements WHERE reference_number = ?";
         $stmt = $this->conn->prepare($sql);
 
         if (!$stmt) {
             return $this->queryFailed();
         }
 
+        $stmt->bind_param('s', $id);
         $stmt->execute();
         $result = $stmt->get_result();
         return $result->num_rows > 0 ? $this->fetched($result) : $this->notFound();

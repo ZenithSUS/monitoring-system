@@ -19,7 +19,9 @@ class Requirements extends Users
 
     protected function getRequirement(?string $id): string
     {
-        $sql = "SELECT id, list_of_compliance, departmentid, entity_name, frequency_of_compliance, date_submitted, expiration, renewal, person_in_charge, status  
+        $sql = "SELECT id, list_of_compliance, departmentid, 
+        entity_name, frequency_of_compliance, date_submitted, 
+        expiration, renewal, person_in_charge, status  
         FROM requirements WHERE document_reference = ?";
         $stmt = $this->conn->prepare($sql);
 

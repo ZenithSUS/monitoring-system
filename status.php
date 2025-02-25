@@ -4,6 +4,13 @@ include_once 'db.php';
 class API extends Database {
     protected $conn;
     protected $errors = array();
+    protected $fileConfig = [
+        "document" => [
+            "maxSize" => 1000000,
+            "allowedTypes" => ["pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"],
+            "uploadDir" => "../uploads/documents/"
+        ]
+    ];
 
     protected function __construct() {
         $this->conn = $this->connect();
@@ -30,6 +37,19 @@ class API extends Database {
     }
 
     /**
+     * Created response
+     * @return string
+     */
+    protected function created() : string {
+        $response = array (
+            'status' => 201,
+            'message' => 'created'
+        );
+        header("HTTP/1.1 201 Created");
+        return json_encode($response);
+    }
+
+    /**
      * Edited response
      * @return string
     */
@@ -39,6 +59,19 @@ class API extends Database {
             'message' => 'edited'
         );
         header("HTTP/1.1 200 Edited");
+        return json_encode($response);
+    }
+
+    /**
+     * Deleted response
+     * @return string
+     */
+    protected function deleted() : string {
+        $response = array (
+            'status' => 200,
+            'message' => 'deleted'
+        );
+        header("HTTP/1.1 200 Deleted");
         return json_encode($response);
     }
 
