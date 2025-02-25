@@ -38,7 +38,7 @@ class Auth extends Token {
         }
 
         
-        if(!$this->checkLoginAuth($account, $password)){
+        if(!$this->checkLoginAuth($email, $password)){
             $this->errors['auth_error'] = 'Email or password is incorrect';
             return $this->fieldError($this->errors);
         }
@@ -77,7 +77,7 @@ class Auth extends Token {
             return $this->fieldError($this->errors);
         }
 
-        return $this->registerUserQuery($email, $username, $password);
+        return $this->registerUserQuery($firstname, $middlename, $lastname, $email, $password);
     }
 
     /**
@@ -135,7 +135,7 @@ class Auth extends Token {
      * @param string $password
      * @return string 
     */
-    private function registerUserQuery(string $email, string $password) : string {
+    private function registerUserQuery(string $firstname, string $middlename, string $lastname, string $email, string $password) : string {
         $password = password_hash($password, PASSWORD_DEFAULT);
         $sql = "INSERT INTO users (id, username, password) VALUES (UUID(), ?, ?)";
         $stmt = $this->conn->prepare($sql);

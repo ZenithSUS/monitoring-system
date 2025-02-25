@@ -11,7 +11,7 @@ class AuthRequest extends Auth {
     public function __construct(){
         parent::__construct();
     }
-   
+
     public function login(string $email, string $password) : string {
         return $this->loginUser($email, $password);
     }

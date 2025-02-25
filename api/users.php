@@ -14,7 +14,7 @@ class UsersRequest extends Users {
     }
 
     public function getUserAccount(string $token) : string {
-        return json_encode(["username" => $this->getUsername($token)]);
+        return json_encode(["username" => $this->getFullName($token)]);
     }
 
     public function get() : string {
