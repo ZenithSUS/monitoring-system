@@ -8,16 +8,6 @@ class SubscriptionProgress extends Requirements
         parent::__construct();
     }
 
-    public function getUserProgress(?string $userId): array
-    {
-        $sql = "SELECT DATEDIFF(expiration, CURDATE()) AS days_left FROM requirements WHERE user_id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param('s', $userId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->num_rows > 0 ? $result->fetch_assoc() : [];
-    }
-
     public function resetUserProgress(?string $id): bool
     {
         $sql = "UPDATE requirements SET status = 'incomplete', date_submitted = CURDATE() WHERE user_id = ?";

@@ -52,8 +52,7 @@ class Register extends Auth
      */
     private function registerUserQuery(?string $firstname = null, ?string $middlename = null, ?string $lastname = null, ?string $email = null, ?string $department = null, ?string $password = null): void
     {
-        $id =
-            $firstname = $this->conn->real_escape_string($firstname);
+        $firstname = $this->conn->real_escape_string($firstname);
         $middlename = $this->conn->real_escape_string($middlename);
         $lastname = $this->conn->real_escape_string($lastname);
         $email = $this->conn->real_escape_string($email);
